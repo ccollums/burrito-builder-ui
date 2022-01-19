@@ -82,6 +82,7 @@ class OrderForm extends Component {
         <button className='submit' onClick={e => this.handleSubmit(e)}>
           Submit Order
         </button>
+        {this.state.error ? <p>Please fill out your name and choose at least one ingredient!</p> : <p style={{ opacity: "0" }}>Error placeholder</p>}
       </form>
     )
   }
