@@ -1,23 +1,53 @@
 import React, { Component } from 'react';
+import { newOrders } from '../../apiCalls';
 
 class OrderForm extends Component {
-  constructor(props) {
+  constructor() {
     super();
-    this.props = props;
     this.state = {
       name: '',
-      ingredients: []
+      ingredients: [],
+      error: false
     };
   }
 
-
   handleSubmit = e => {
     e.preventDefault();
+    if (this.state.ingredients.length > 0 && this.state.name) {
+      this.setState({ error: false })
+      const newOrder = {
+        id: Date.now(),
+        name: this.state.name,
+        ingredients: this.state.ingredients
+      }
+      this.handleFetch(newOrder)
+    } else {
+      this.setState({ error: true })
+    }
     this.clearInputs();
   }
 
+  handleFetch = (order) => {
+    newOrders(order)
+    .then(response => response.json())
+    .then(order => {
+      this.props.updateOrders(order)
+    })
+    .catch(err => console.log(err));
+  }
+
   clearInputs = () => {
-    this.setState({name: '', ingredients: []});
+    this.setState({ name: '', ingredients: [] });
+  }
+
+  handleIngredientChange = e => {
+    e.preventDefault();
+    this.setState({ ingredients: [...this.state.ingredients, e.target.name] })
+  }
+
+  handleNameChange = e => {
+    e.preventDefault()
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   render() {
